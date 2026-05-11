@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { brookes } from "./data/brookes";
+import { brookes } from "./data/brookes.js";
 import BrookeCard from "./components/BrookeCard";
 import CorePanel from "./components/CorePanel";
 import SystemMetrics from "./components/SystemMetrics";

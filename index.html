@@ -1,13 +1,31 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- Sets the icon in the browser tab -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>knox-os</title>
+    <title>Brooke OS - Terminal</title>
+    <style>
+      /* Quick reset to prevent white borders while loading */
+      body {
+        margin: 0;
+        background-color: #000;
+        color: white;
+      }
+    </style>
   </head>
   <body>
+    <!-- This ID MUST match what you use in main.jsx (ReactDOM.createRoot) -->
     <div id="root"></div>
+    <div>
+      <h3>THIS IS A TEST</h3>
+    </div>
+
+    <!-- 
+      IMPORTANT: In Vite, you must use type="module". 
+      The path must point to your entry script, usually /src/main.jsx 
+    -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

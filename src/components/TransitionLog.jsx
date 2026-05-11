@@ -1,6 +1,6 @@
 export default function TransitionLog({ log }) {
   return (
-    <div style={{
+    <div style={{ 
       marginTop: "20px",
       padding: "15px",
       border: "1px solid #333",
