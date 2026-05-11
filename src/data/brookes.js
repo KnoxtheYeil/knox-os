@@ -1,4 +1,4 @@
-export const knox = [
+export const brookes = [
   {
     id: "core",
     name: "Core Brooke",

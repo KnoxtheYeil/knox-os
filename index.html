@@ -2,30 +2,35 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Sets the icon in the browser tab -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/brain.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Brooke OS - Terminal</title>
+
+    <title>Brooke OS — Mind Operating System</title>
+
+    <meta
+      name="description"
+      content="A personal operating system dashboard modeling cognitive and emotional states as modular processes."
+    />
+
+    <!-- Optional: social preview (for GitHub / sharing links) -->
+    <meta property="og:title" content="Brooke OS" />
+    <meta property="og:description" content="A mind operating system dashboard." />
+    <meta property="og:type" content="website" />
+
     <style>
-      /* Quick reset to prevent white borders while loading */
       body {
         margin: 0;
-        background-color: #000;
+        background: #000;
         color: white;
+        font-family: Arial, sans-serif;
       }
     </style>
   </head>
-  <body>
-    <!-- This ID MUST match what you use in main.jsx (ReactDOM.createRoot) -->
-    <div id="root"></div>
-    <div>
-      <h3>THIS IS A TEST</h3>
-    </div>
 
-    <!-- 
-      IMPORTANT: In Vite, you must use type="module". 
-      The path must point to your entry script, usually /src/main.jsx 
-    -->
+  <body>
+    <!-- React mounts here -->
+    <div id="root"></div>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
