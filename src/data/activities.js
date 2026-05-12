@@ -48,6 +48,7 @@ export const activities = [
       survival: -10,
       caregiver: -10,
     },
+  },
     {
     id: "work",
     name: "Work",
