@@ -1,33 +1,67 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
-/* UI Components */
-// import BrookeCard from "./components/BrookeCard";
 import CorePanel from "./components/CorePanel";
 import SystemMetrics from "./components/SystemMetrics";
 import TransitionLog from "./components/TransitionLog";
 
-/* V4 DATA */
 import { activities } from "./data/activities";
+import { evaluateSystem } from "./data/evaluateSystem";
+import { spectrumDefinitions } from "./data/spectrumDefinitions";
 
-/* V4 ENGINE */
-import { aggregateLoad } from "./engine/aggregateLoad";
-import { deriveBrookeStates } from "./engine/deriveBrookeStates";
-import { evaluateSystem } from "./engine/evaluateSystem";
+import { useBrookeEngine } from "./engine/useBrookeEngine";
 
 export default function App() {
-  /* =========================
-     🧠 STATE (V4 SOURCE OF TRUTH)
-  ========================== */
-
   const [activeActivities, setActiveActivities] = useState([]);
   const [log, setLog] = useState([]);
 
-  /* =========================
-     🔁 ACTIVITY TOGGLE SYSTEM
-  ========================== */
+  const [spectra, setSpectra] = useState({
+    social_isolation: 0.5,
+    creative_structure: 0.5,
+    rest_stimulation: 0.5,
+    independent_collab: 0.5,
+    stability_crisis: 0.5,
+  });
+
+  const {
+    baseLoad,
+    spectrumAdjustedLoad,
+    brookeStates,
+  } = useBrookeEngine({
+    activeActivities,
+    spectra,
+    spectrumDefinitions,
+  });
+
+  const evaluation = evaluateSystem(brookeStates);
+
+  const coreState =
+    brookeStates?.executive?.status || "stable";
+
+  const metrics = {
+    cpu: Math.min(
+      (spectrumAdjustedLoad.executive || 0) +
+        (spectrumAdjustedLoad.social || 0),
+      100
+    ),
+    ram: Math.min(
+      (spectrumAdjustedLoad.caregiver || 0) +
+        (spectrumAdjustedLoad.creative || 0),
+      100
+    ),
+    battery: Math.max(
+      100 -
+        (
+          (spectrumAdjustedLoad.survival || 0) +
+          (spectrumAdjustedLoad.executive || 0)
+        ),
+      0
+    ),
+  };
 
   const toggleActivity = (activity) => {
-    const exists = activeActivities.some((a) => a.id === activity.id);
+    const exists = activeActivities.some(
+      (a) => a.id === activity.id
+    );
 
     const updated = exists
       ? activeActivities.filter((a) => a.id !== activity.id)
@@ -43,74 +77,31 @@ export default function App() {
     ]);
   };
 
-  /* =========================
-     ⚙️ V4 ENGINE PIPELINE
-  ========================== */
-
-  const load = useMemo(() => {
-    return aggregateLoad(activeActivities);
-  }, [activeActivities]);
-
-  const brookeStates = useMemo(() => {
-    return deriveBrookeStates(load);
-  }, [load]);
-
-  const evaluation = useMemo(() => {
-    return evaluateSystem(brookeStates);
-  }, [brookeStates]);
-
-  /* =========================
-     🧠 DERIVED UI STATE
-  ========================== */
-
-  const coreState = brookeStates.executive?.status || "stable";
-
-  const metrics = {
-    cpu: Math.min((load.executive || 0) + (load.social || 0), 100),
-    ram: Math.min((load.caregiver || 0) + (load.creative || 0), 100),
-    battery: Math.max(
-      100 - ((load.survival || 0) + (load.executive || 0)),
-      0
-    ),
-  };
-
-  /* =========================
-     🎨 UI RENDER
-  ========================== */
-
   return (
     <div className="layout">
-
-      {/* LEFT PANEL */}
       <div>
         <CorePanel coreState={coreState} />
         <SystemMetrics metrics={metrics} />
 
-        {/* SYSTEM FEEDBACK */}
         <div className="glass">
           <h3>System Feedback</h3>
 
-          {evaluation?.warnings?.length > 0 &&
-            evaluation.warnings.map((w, i) => (
-              <p key={i} style={{ color: "#ff6b6b" }}>
-                ⚠ {w}
-              </p>
-            ))}
+          {evaluation?.warnings?.map((w, i) => (
+            <p key={i} style={{ color: "#ff6b6b" }}>
+              ⚠ {w}
+            </p>
+          ))}
 
-          {evaluation?.praise?.length > 0 &&
-            evaluation.praise.map((p, i) => (
-              <p key={i} style={{ color: "#4ade80" }}>
-                ✓ {p}
-              </p>
-            ))}
+          {evaluation?.praise?.map((p, i) => (
+            <p key={i} style={{ color: "#4ade80" }}>
+              ✓ {p}
+            </p>
+          ))}
         </div>
       </div>
 
-      {/* CENTER PANEL */}
       <div>
         <h1>KNOX OS — V4</h1>
-
-        <h3>Activities</h3>
 
         {activities.map((activity) => {
           const isActive = activeActivities.some(
@@ -138,11 +129,9 @@ export default function App() {
         })}
       </div>
 
-      {/* RIGHT PANEL */}
       <div>
         <TransitionLog log={log} />
       </div>
-
     </div>
   );
 }
