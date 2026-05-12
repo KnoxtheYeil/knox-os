@@ -63,7 +63,7 @@ export default function App() {
       </div>
 
       <div>
-        <h1>Brooke OS</h1>
+        <h1>KNOX OS</h1>
 
         {state.map((brooke) => (
           <BrookeCard
