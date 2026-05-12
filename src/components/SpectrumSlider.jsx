@@ -1,7 +1,16 @@
-export default function SpectrumSlider({ label, value, onChange }) {
+export default function SpectrumSlider({
+  id,
+  labelLeft,
+  labelRight,
+  value,
+  onChange,
+}) {
   return (
-    <div style={{ marginBottom: 20 }}>
-      <h4>{label}</h4>
+    <div className="glass" style={{ marginBottom: 12 }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <span>{labelLeft}</span>
+        <span>{labelRight}</span>
+      </div>
 
       <input
         type="range"
@@ -9,14 +18,14 @@ export default function SpectrumSlider({ label, value, onChange }) {
         max="1"
         step="0.01"
         value={value}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
+        onChange={(e) =>
+          onChange(id, parseFloat(e.target.value))
+        }
         style={{ width: "100%" }}
       />
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <small>Negative</small>
-        <small>{Math.round(value * 100)}%</small>
-        <small>Positive</small>
+      <div style={{ textAlign: "center", opacity: 0.7 }}>
+        {value.toFixed(2)}
       </div>
     </div>
   );

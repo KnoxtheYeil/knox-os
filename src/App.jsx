@@ -3,15 +3,21 @@ import { useState } from "react";
 import CorePanel from "./components/CorePanel";
 import SystemMetrics from "./components/SystemMetrics";
 import TransitionLog from "./components/TransitionLog";
+import SpectrumSlider from "./components/SpectrumSlider";
 
 import { activities } from "./data/activities";
 import { evaluateSystem } from "./data/evaluateSystem";
 import { spectrumDefinitions } from "./data/spectrumDefinitions";
+import { spectrums } from "./data/activitySpectrums";
+import { presets } from "./data/presets";
 
 import { useBrookeEngine } from "./engine/useBrookeEngine";
 
 export default function App() {
+  /* ================= STATE ================= */
+
   const [activeActivities, setActiveActivities] = useState([]);
+  const [activePresets, setActivePresets] = useState([]);
   const [log, setLog] = useState([]);
 
   const [spectra, setSpectra] = useState({
@@ -22,12 +28,14 @@ export default function App() {
     stability_crisis: 0.5,
   });
 
+  /* ================= ENGINE ================= */
+
   const {
-    baseLoad,
-    spectrumAdjustedLoad,
+    presetAdjustedLoad,
     brookeStates,
   } = useBrookeEngine({
     activeActivities,
+    activePresets,
     spectra,
     spectrumDefinitions,
   });
@@ -39,24 +47,26 @@ export default function App() {
 
   const metrics = {
     cpu: Math.min(
-      (spectrumAdjustedLoad.executive || 0) +
-        (spectrumAdjustedLoad.social || 0),
+      (presetAdjustedLoad.executive || 0) +
+        (presetAdjustedLoad.social || 0),
       100
     ),
     ram: Math.min(
-      (spectrumAdjustedLoad.caregiver || 0) +
-        (spectrumAdjustedLoad.creative || 0),
+      (presetAdjustedLoad.caregiver || 0) +
+        (presetAdjustedLoad.creative || 0),
       100
     ),
     battery: Math.max(
       100 -
         (
-          (spectrumAdjustedLoad.survival || 0) +
-          (spectrumAdjustedLoad.executive || 0)
+          (presetAdjustedLoad.survival || 0) +
+          (presetAdjustedLoad.executive || 0)
         ),
       0
     ),
   };
+
+  /* ================= HANDLERS ================= */
 
   const toggleActivity = (activity) => {
     const exists = activeActivities.some(
@@ -77,8 +87,19 @@ export default function App() {
     ]);
   };
 
+  const updateSpectrum = (id, value) => {
+    setSpectra((prev) => ({
+      ...prev,
+      [id]: value,
+    }));
+  };
+
+  /* ================= RENDER ================= */
+
   return (
     <div className="layout">
+
+      {/* LEFT PANEL */}
       <div>
         <CorePanel coreState={coreState} />
         <SystemMetrics metrics={metrics} />
@@ -100,8 +121,11 @@ export default function App() {
         </div>
       </div>
 
+      {/* CENTER PANEL */}
       <div>
         <h1>KNOX OS — V4</h1>
+
+        <h3>Activities</h3>
 
         {activities.map((activity) => {
           const isActive = activeActivities.some(
@@ -127,11 +151,27 @@ export default function App() {
             </div>
           );
         })}
+
+        {/* SLIDERS */}
+        <h3>Spectrum Controls</h3>
+
+        {Object.entries(spectrums).map(([id, labels]) => (
+          <SpectrumSlider
+            key={id}
+            id={id}
+            labelLeft={labels.left}
+            labelRight={labels.right}
+            value={spectra[id]}
+            onChange={updateSpectrum}
+          />
+        ))}
       </div>
 
+      {/* RIGHT PANEL */}
       <div>
         <TransitionLog log={log} />
       </div>
+
     </div>
   );
 }
