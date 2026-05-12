@@ -1,14 +1,19 @@
-export function evaluateSystem(state) {
+export function evaluateSystem(states) {
   const warnings = [];
   const praise = [];
 
-  if (state?.executive?.status === "overloaded") {
-    warnings.push("Executive system overloaded");
-  }
+  Object.entries(states).forEach(([key, value]) => {
+    if (value.status === "overloaded") {
+      warnings.push(`${key} overloaded`);
+    }
 
-  if (state?.creative?.status === "active") {
-    praise.push("Creative system engaged");
-  }
+    if (value.status === "recovering") {
+      praise.push(`${key} recovering`);
+    }
+  });
 
-  return { warnings, praise };
+  return {
+    warnings,
+    praise,
+  };
 }
