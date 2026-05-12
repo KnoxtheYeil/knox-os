@@ -1,62 +1,86 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+
 import { brookes } from "./data/brookes";
+
 import BrookeCard from "./components/BrookeCard";
-import CorePanel from "./components/CorePanel";
 import SystemMetrics from "./components/SystemMetrics";
 import TransitionLog from "./components/TransitionLog";
+import WarningsPanel from "./components/WarningsPanel";
+import Recommendations from "./components/Recommendations";
+
+import { calculateMetrics } from "./engine/calculateMetrics";
+import { detectConflicts } from "./engine/detectConflicts";
+import { generateRecommendations } from "./engine/recommendations";
 
 export default function App() {
   const [state, setState] = useState(brookes);
   const [log, setLog] = useState([]);
 
-  const activateBrooke = (id) => {
-    const updated = state.map((b) =>
-      b.id === id
-        ? { ...b, status: "active" }
-        : { ...b, status: "background" }
-    );
+  const metrics = useMemo(
+    () => calculateMetrics(state),
+    [state]
+  );
+
+  const conflicts = useMemo(
+    () => detectConflicts(state),
+    [state]
+  );
+
+  const recommendations = useMemo(
+    () => generateRecommendations(metrics, conflicts),
+    [metrics, conflicts]
+  );
+
+  const toggleBrooke = (id) => {
+    const updated = state.map((b) => {
+      if (b.id === id) {
+        return {
+          ...b,
+          status:
+            b.status === "active"
+              ? "background"
+              : "active"
+        };
+      }
+
+      return b;
+    });
 
     setState(updated);
-    setLog((prev) => [...prev, `Activated: ${id}`]);
+
+    setLog((prev) => [
+      `${new Date().toLocaleTimeString()} — toggled ${id}`,
+      ...prev
+    ]);
   };
 
-  const coreState =
-    state.find((b) => b.id === "core")?.status || "unknown";
-
   return (
-    <div style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 2fr 1fr",
-      gap: "20px",
-      padding: "20px",
-      background: "#000",
-      minHeight: "100vh",
-      color: "white"
-    }}>
-      
-      {/* LEFT PANEL */}
+    <div className="layout">
       <div>
-        <CorePanel coreState={coreState} />
-        <SystemMetrics />
+        <SystemMetrics metrics={metrics} />
+        <WarningsPanel conflicts={conflicts} />
+        <Recommendations recommendations={recommendations} />
       </div>
 
-      {/* CENTER PANEL */}
       <div>
-        <h2>Brooke OS Processes</h2>
-        {state.map((b) => (
+        <h1>Brooke OS</h1>
+
+        {state.map((brooke) => (
           <BrookeCard
-            key={b.id}
-            brooke={b}
-            onActivate={activateBrooke}
+            key={brooke.id}
+            brooke={brooke}
+            onActivate={toggleBrooke}
           />
         ))}
       </div>
 
-      {/* RIGHT PANEL */}
       <div>
         <TransitionLog log={log} />
       </div>
-
     </div>
   );
 }
+
+
+
+
