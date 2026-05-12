@@ -1,22 +1,27 @@
-export function applySpectrums(load = {}, spectrums = {}, definitions = []) {
-  const total = { ...load };
+export function applySpectrums(
+  baseLoad,
+  spectra,
+  definitions
+) {
+  const total = { ...baseLoad };
 
   definitions.forEach((spectrum) => {
-    const position = spectrums[spectrum.id] ?? 0.5;
+    const position = spectra[spectrum.id] || 0.5;
 
     const positiveWeight = position;
     const negativeWeight = 1 - position;
 
-    const applyLoad = (sourceLoad, weight) => {
-      Object.entries(sourceLoad || {}).forEach(([key, value]) => {
-        if (!total[key]) total[key] = 0;
+    Object.entries(
+      spectrum.positive.load
+    ).forEach(([key, value]) => {
+      total[key] += value * positiveWeight;
+    });
 
-        total[key] += value * weight;
-      });
-    };
-
-    applyLoad(spectrum.positive?.load, positiveWeight);
-    applyLoad(spectrum.negative?.load, negativeWeight);
+    Object.entries(
+      spectrum.negative.load
+    ).forEach(([key, value]) => {
+      total[key] += value * negativeWeight;
+    });
   });
 
   return total;

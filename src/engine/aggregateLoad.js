@@ -9,16 +9,11 @@ export function aggregateLoad(activeActivities) {
   };
 
   activeActivities.forEach((activity) => {
-    const load = activity.load || {};
-
-    Object.entries(load).forEach(([key, value]) => {
-      // ensure key exists in system
-      if (total[key] === undefined) {
-        total[key] = 0;
+    Object.entries(activity.load).forEach(
+      ([key, value]) => {
+        total[key] += value;
       }
-
-      total[key] += value;
-    });
+    );
   });
 
   return total;
