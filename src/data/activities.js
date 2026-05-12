@@ -48,5 +48,17 @@ export const activities = [
       survival: -10,
       caregiver: -10,
     },
+    {
+    id: "work",
+    name: "Work",
+    load: {
+      executive: 70,
+      social: 30,
+      caregiver: 20,
+      creative:10,
+      survival: 15,
+      recovery: -10,
+      
+    },
   },
 ];
