@@ -1,23 +1,43 @@
 body {
   margin: 0;
-  background: #050505;
+  background: radial-gradient(circle at top, #0b0b0f, #000);
+  font-family: Inter, Arial, sans-serif;
   color: white;
-  font-family: Arial, sans-serif;
+  overflow-x: hidden;
 }
 
 .layout {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
   gap: 20px;
-  min-height: 100vh;
   padding: 20px;
+  min-height: 100vh;
 }
 
-.panel {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
+.glass {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(18px);
+  border-radius: 20px;
   padding: 16px;
-  margin-bottom: 20px;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
 }
+
+h1, h2, h3 {
+  letter-spacing: 0.5px;
+}
+
+button {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+
