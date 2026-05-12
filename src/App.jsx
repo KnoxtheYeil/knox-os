@@ -6,9 +6,9 @@ import TransitionLog from "./components/TransitionLog";
 import SpectrumSlider from "./components/SpectrumSlider";
 
 import { activities } from "./data/activities";
-import { evaluateSystem } from "./data/evaluateSystem";
+import { evaluateSystem } from "./engine/evaluateSystem";
 import { spectrumDefinitions } from "./data/spectrumDefinitions";
-import { spectrums } from "./data/activitySpectrums";
+// import { spectrums } from "./data/activitySpectrums";
 import { presets } from "./data/presets";
 
 import { useBrookeEngine } from "./engine/useBrookeEngine";
