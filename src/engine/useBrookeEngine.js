@@ -1,20 +1,20 @@
 import { useMemo } from "react";
 
 import { aggregateLoad } from "./aggregateLoad";
-import { deriveBrookeStates } from "./deriveBrookeStates";
 import { applySpectrums } from "./applySpectrums";
+import { applyPresets } from "./applyPresets";
+import { deriveBrookeStates } from "./deriveBrookeStates";
 
 export function useBrookeEngine({
   activeActivities,
   spectra,
   spectrumDefinitions,
+  activePresets,
 }) {
-  // 1. Base load
   const baseLoad = useMemo(() => {
     return aggregateLoad(activeActivities);
   }, [activeActivities]);
 
-  // 2. Spectrum adjustment
   const spectrumAdjustedLoad = useMemo(() => {
     return applySpectrums(
       baseLoad,
@@ -23,14 +23,23 @@ export function useBrookeEngine({
     );
   }, [baseLoad, spectra, spectrumDefinitions]);
 
-  // 3. Derived system state
+  const presetAdjustedLoad = useMemo(() => {
+    return applyPresets(
+      spectrumAdjustedLoad,
+      activePresets
+    );
+  }, [spectrumAdjustedLoad, activePresets]);
+
   const brookeStates = useMemo(() => {
-    return deriveBrookeStates(spectrumAdjustedLoad);
-  }, [spectrumAdjustedLoad]);
+    return deriveBrookeStates(
+      presetAdjustedLoad
+    );
+  }, [presetAdjustedLoad]);
 
   return {
     baseLoad,
     spectrumAdjustedLoad,
+    presetAdjustedLoad,
     brookeStates,
   };
 }
