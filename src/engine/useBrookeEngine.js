@@ -35,11 +35,12 @@ export function useBrookeEngine({
       presetAdjustedLoad
     );
   }, [presetAdjustedLoad]);
+  
 
-  return {
-    baseLoad,
-    spectrumAdjustedLoad,
-    presetAdjustedLoad,
-    brookeStates,
-  };
+ return {
+ baseLoad,
+spectrumAdjustedLoad,
+ presetAdjustedLoad,
+brookeStates,
+};
 }
